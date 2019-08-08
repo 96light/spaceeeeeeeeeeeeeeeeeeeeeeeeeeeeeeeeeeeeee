@@ -1,0 +1,8 @@
+﻿  cl : Command line warning D9035 : option 'Gm' has been deprecated and will be removed in a future release
+  GSIntro.cpp
+D:\Games\Programming\TrainingFramework\src\Helper\ThreadPool.h(37,13): warning C4477:  'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'std::thread::id'
+D:\Games\Programming\Soloud\include\soloud.h(37,1): warning C4005:  'WIN32_LEAN_AND_MEAN': macro redefinition
+D:\Games\Programming\Include\AMD\EGL\eglplatform.h(67): message :  see previous definition of 'WIN32_LEAN_AND_MEAN'
+D:\Games\Programming\TrainingFramework\src\GameStates\GSIntro.cpp(21,86): warning C4244:  'argument': conversion from 'int' to 'GLfloat', possible loss of data
+D:\Games\Programming\TrainingFramework\src\GameStates\GSIntro.cpp(21,55): warning C4244:  'argument': conversion from 'int' to 'GLfloat', possible loss of data
+  TrainingFramework.vcxproj -> D:\Games\Programming\\BIN-Angle\TrainingFramework.exe
