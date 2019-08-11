@@ -99,6 +99,12 @@
     <ClCompile Include="src\GameObject\UFO.cpp">
       <Filter>src\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameObject\Bullet2.cpp" />
+    <ClCompile Include="src\GameObject\Bullet3.cpp" />
+    <ClCompile Include="src\GameStates\GSSetting1.cpp" />
+    <ClCompile Include="src\GameStates\GSSetting2.cpp" />
+    <ClCompile Include="src\GameStates\GSSetting3.cpp" />
+    <ClCompile Include="src\GameStates\GSPlayagain1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -194,6 +200,12 @@
     <ClInclude Include="src\GameObject\UFO.h">
       <Filter>src\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameObject\Bullet2.h" />
+    <ClInclude Include="src\GameObject\Bullet3.h" />
+    <ClInclude Include="src\GameStates\GSSetting1.h" />
+    <ClInclude Include="src\GameStates\GSSetting2.h" />
+    <ClInclude Include="src\GameStates\GSSetting3.h" />
+    <ClInclude Include="src\GameStates\GSPlayagain1.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

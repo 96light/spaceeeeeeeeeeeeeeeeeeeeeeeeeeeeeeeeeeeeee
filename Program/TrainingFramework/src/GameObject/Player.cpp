@@ -1,9 +1,22 @@
 #include "Player.h"
 #include "GameManager/ResourceManagers.h"
-
+#include<fstream>
+using namespace std;
 Player::Player(std::shared_ptr<Models>& model, std::shared_ptr<Shaders>& shader, std::shared_ptr<Texture>& texture)
 	:Sprite2D(model, shader, texture)
 {
+	ifstream FileIn;
+
+	FileIn.open("config.txt", ios_base::in);
+
+	if (FileIn.fail() == true)
+	{
+		cout << "\nFile cua ban khong ton tai";
+	}
+	int x;
+	
+	FileIn >> x;
+	sfx = x;
 	m_TargetPosition = Vector2(0, 0);
 	m_MaxCooldown = 0.1;
 	m_Cooldown = 0.0;
@@ -30,8 +43,9 @@ void Player::Update(GLfloat deltatime)
 		return;
 
 	if (m_Heal <= 0)
-	{
+	{ if(sfx==1){
 		SoundManager::GetInstance()->PlaySound("explosive_2");
+	}
 		m_isAlive = false;
 		return;
 	}
@@ -79,10 +93,12 @@ bool Player::CanShoot()
 	return (m_Cooldown <= 0);
 }
 
-void Player::Shoot(std::vector<std::shared_ptr<Bullet>>& listBullet)
-{
+void Player::Shoot(std::vector<std::shared_ptr<Bullet>>& listBullet,int s)
+{if (sfx ==1){
 	SoundManager::GetInstance()->PlaySound("fire");
-	m_Cooldown = m_MaxCooldown;
+}
+
+   m_Cooldown = m_MaxCooldown;
 	for (auto bullet : listBullet)
 	{
 		if (!bullet->IsActive())
@@ -115,7 +131,7 @@ float Player::distance(Vector2 pos, Vector2 target)
 	return sqrt((pos.x - target.x) * (pos.x - target.x) + (pos.y - target.y) * (pos.y - target.y));
 }
 
-void Player::CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std::vector<std::shared_ptr<Enermy>> listEnermy)
+void Player::CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std::vector<std::shared_ptr<Bullet2>>& listBullet2, std::vector<std::shared_ptr<Bullet3>>& listBullet3, std::vector<std::shared_ptr<Enermy>> listEnermy)
 {
 	Vector2 pos = Get2DPosition();
 	for (auto enermy : listEnermy)
@@ -133,6 +149,30 @@ void Player::CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std
 	for (auto bullet : listBullet)
 	{
 		if (bullet->IsActive() && bullet->GetType() == BULLET_TYPE::Enermy)
+		{
+			if (distance(pos, bullet->Get2DPosition()) < m_SizeCollider + bullet->GetColliderSize())
+			{
+				bullet->SetActive(false);
+				m_Heal -= bullet->GetDamage();
+			}
+		}
+	}
+
+	for (auto bullet : listBullet3)
+	{
+		if (bullet->IsActive() && bullet->GetType() == BULLET_TYPE3::Enermy)
+		{
+			if (distance(pos, bullet->Get2DPosition()) < m_SizeCollider + bullet->GetColliderSize())
+			{
+				bullet->SetActive(false);
+				m_Heal -= bullet->GetDamage();
+			}
+		}
+	}
+
+	for (auto bullet : listBullet3)
+	{
+		if (bullet->IsActive() && bullet->GetType() == BULLET_TYPE3::Enermy)
 		{
 			if (distance(pos, bullet->Get2DPosition()) < m_SizeCollider + bullet->GetColliderSize())
 			{

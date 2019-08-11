@@ -1,7 +1,8 @@
 #include "Enermy.h"
 #include "GameManager/ResourceManagers.h"
 #include <GameStates\GSPlay.h>
-
+#include<fstream>
+using namespace std;
 Enermy::Enermy(std::shared_ptr<Models>& model, std::shared_ptr<Shaders>& shader, std::shared_ptr<Texture>& texture)
 	:Sprite2D(model, shader, texture)
 {
@@ -14,6 +15,19 @@ Enermy::Enermy(std::shared_ptr<Models>& model, std::shared_ptr<Shaders>& shader,
 	m_Damage = 20;
 	m_Explosive = false;
 	m_SizeCollider = 20;
+	
+	ifstream FileIn;
+
+	FileIn.open("config.txt", ios_base::in);
+
+	if (FileIn.fail() == true)
+	{
+		cout << "\nFile cua ban khong ton tai";
+	}
+	int x;
+
+	FileIn >> x;
+	sfx = x;
 }
 
 Enermy::~Enermy()
@@ -27,8 +41,9 @@ void Enermy::Update(float deltaTime)
 		return;
 
 	if (m_Heal <= 0 || m_Explosive)
-	{
+	{ if(sfx==1){
 		SoundManager::GetInstance()->PlaySound("explosive");
+	}
 		m_Explosive = true;
 		GSPlay::m_score ++;
 		return;

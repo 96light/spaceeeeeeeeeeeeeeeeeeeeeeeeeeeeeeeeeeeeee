@@ -5,6 +5,8 @@
 #include"meteor.h"
 #include<string>
 #include"UFO.h"
+#include "Bullet2.h"
+#include "Bullet3.h"
 class Player : public Sprite2D
 {
 	
@@ -16,9 +18,9 @@ public:
 	void Update(GLfloat deltatime) override;
 
 	bool CanShoot();
-	void Shoot(std::vector<std::shared_ptr<Bullet>>& listBullet);
+	void Shoot(std::vector<std::shared_ptr<Bullet>>& listBullet, int s);
 
-	void CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std::vector<std::shared_ptr<Enermy>> listEnermy);
+	void CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std::vector<std::shared_ptr<Bullet2>>& listBullet2, std::vector<std::shared_ptr<Bullet3>>& listBullet3, std::vector<std::shared_ptr<Enermy>> listEnermy);
 	void CheckCollider2(std::vector<std::shared_ptr<Meteor>> listMeteor);
 	void CheckCollider2(std::vector<std::shared_ptr<UFO>> listUFO);
 	void		SetColliderSize(float size);
@@ -35,7 +37,7 @@ private:
 	float	m_Cooldown;
 	float	m_SizeCollider;
 	
-
+	int sfx;
 
 	float distance(Vector2 pos, Vector2 target);
 };

@@ -1,5 +1,6 @@
 #include "GSMenu.h"
-
+#include<fstream>
+using namespace std;
 GSMenu::GSMenu()
 {
 
@@ -31,6 +32,7 @@ void GSMenu::Init()
 	button->SetSize(100, 100);
 	button	->SetRotation(180);
 	button->SetOnClick([]() {
+		
 		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Play);
 		});
 	m_listButton.push_back(button); 
@@ -42,7 +44,37 @@ void GSMenu::Init()
 	button->SetSize(110, 110);
 	button->SetRotation(180);
 	button->SetOnClick([]() {
-		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Setting);
+		
+		ifstream FileIn;
+		FileIn.open("config.txt", ios_base::in);
+
+		
+		int x;
+		int y;
+		FileIn >> x;
+		FileIn >> y;
+
+		//bgm = y;
+
+		FileIn.close();
+		if (x == 1 && y == 1) {
+			Sleep(500);
+			GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Setting);
+		}
+		else if (x == 1 && y == 0) {
+			Sleep(500);
+			GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Setting1);
+		}
+		else if (x == 0 && y == 1) {
+			Sleep(500);
+			GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Setting2);
+		}
+		else if (x == 0 && y == 0)
+
+		{
+			Sleep(500);
+			GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Setting3);
+		}
 		});
 	m_listButton.push_back(button);
 	//exit button
@@ -52,6 +84,7 @@ void GSMenu::Init()
 	button->SetSize(110, 110);
 	button->SetRotation(180);
 	button->SetOnClick([]() {
+		Sleep(500);
 		exit(0);
 		});
 	m_listButton.push_back(button);
@@ -62,6 +95,8 @@ void GSMenu::Init()
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("arialbd");
 	m_Text_gameName = std::make_shared< Text>(shader, font, "SPACE ADVEVTURE", TEXT_COLOR::PURPLE, 3.0);
 	m_Text_gameName->Set2DPosition(Vector2(Application::screenWidth / 2-300, 120));
+
+	
 }
 
 void GSMenu::Exit()

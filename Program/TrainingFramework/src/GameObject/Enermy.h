@@ -36,7 +36,7 @@ private:
 	float	m_Cooldown;
 	float	m_Damage;
 	float	m_SizeCollider;
-
+	int sfx;
 	float distance(Vector2 pos, Vector2 target);
 
 };

@@ -53,8 +53,8 @@ void GSPlayagain::Init()
 	//text game title
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("arialbd");
-	m_Text_gameName = std::make_shared< Text>(shader, font, "SPACE ADVEVTURE", TEXT_COLOR::PURPLE, 3.0);
-	m_Text_gameName->Set2DPosition(Vector2(Application::screenWidth / 2 - 300, 120));
+	m_Text_gameName = std::make_shared< Text>(shader, font, "Play AGAIN ?", TEXT_COLOR::PURPLE, 3.0);
+	m_Text_gameName->Set2DPosition(Vector2(Application::screenWidth / 2 - 200, 120));
 }
 
 void GSPlayagain::Exit()

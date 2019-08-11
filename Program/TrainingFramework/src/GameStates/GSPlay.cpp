@@ -1,7 +1,8 @@
-#include <sstream>
+﻿#include <sstream>
+#include<iostream>
 #include <iomanip>
 #include <thread>
-
+#include <fstream>
 #include "GSPlay.h"
 #include "Shaders.h"
 #include "Texture.h"
@@ -15,13 +16,16 @@
 #include "ExplosiveEffect.h"
 #include "meteor.h"
 #include"UFO.h"
+#include"Bullet2.h"
+using namespace std;
 int GSPlay::m_score = 0;
 GSPlay::GSPlay()
 {
 	m_SpawnCooldown = 0.1;
 	m_SpawnCooldown2 = 1;
 	 m_SpawnCooldown2=0.3;
-	 m_score = 0; 
+	 m_score = 40; 
+	// m_sound = sound;
 }
 
 
@@ -77,9 +81,27 @@ void GSPlay::Init()
 	
 	SoundManager::GetInstance()->AddSound("fire");
 	SoundManager::GetInstance()->AddSound("fire_enemy");
-    SoundManager::GetInstance()->PlaySound("bground");
+	ifstream FileIn;
 
+	FileIn.open("config.txt", ios_base::in);
 
+	if (FileIn.fail() == true)
+	{
+		cout << "\nFile cua ban khong ton tai";
+	}
+    int x;
+	int y;
+	FileIn >> x;
+	FileIn >> y;
+	sfx=x;
+	sfx2 = y;
+	//bgm = y;
+	
+	FileIn.close();
+	if(sfx2 ==1){
+		SoundManager::GetInstance()->PlaySound("bground");
+	}
+	
 
 }
 
@@ -107,7 +129,10 @@ void GSPlay::HandleEvents()
 
 void GSPlay::HandleKeyEvents(int key, bool bIsPressed)
 {
-	
+	if (key == 27)
+	{
+		SoundManager::GetInstance()->PauseSound("bground");
+	}
 
 }
 
@@ -119,9 +144,9 @@ void GSPlay::HandleMouseEvents(int x, int y)
 
 void GSPlay::HandleTouchEvents(int x, int y, bool bIsPressed)
 {
-
+	//SoundManager::GetInstance()->PauseSound("bground");
 	if (m_Player->CanShoot())
-		m_Player->Shoot(m_listBullet);
+		m_Player->Shoot(m_listBullet,sfx);
 }
 
 void GSPlay::Update(float deltaTime)
@@ -164,9 +189,10 @@ void GSPlay::Update(float deltaTime)
 		/*if (m_Player->CanShoot())
 			m_Player->Shoot(m_listBullet);*/
 
-		m_Player->CheckCollider(m_listBullet, m_listEnermy);
+		m_Player->CheckCollider(m_listBullet, m_listBullet2, m_listBullet3, m_listEnermy);
 		m_Player->CheckCollider2(m_listMeteor);
 	}
+	
 	else {
 		SoundManager::GetInstance()->PauseSound("bground");
 		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Playagain);
@@ -219,6 +245,16 @@ void GSPlay::Update(float deltaTime)
 		if (bullet->IsActive())
 			bullet->Update(deltaTime);
 	}
+	for (auto bullet : m_listBullet2)
+	{
+		if (bullet->IsActive())
+			bullet->Update(deltaTime);
+	}
+	for (auto bullet : m_listBullet3)
+	{
+		if (bullet->IsActive())
+			bullet->Update(deltaTime);
+	}
 	for (auto meteor : m_listMeteor)
 	{
 		if (meteor->IsActive())
@@ -228,6 +264,44 @@ void GSPlay::Update(float deltaTime)
 		}
 	}
 
+	
+	//hp = m_Player->GetHeal;
+	if (m_score == 42)
+	{
+		m_SpawnCooldown = 10000000;
+		m_SpawnCooldown2 = 10000000;
+		for (auto UFO : m_listEnermy2)
+		{
+			if (UFO->IsActive())
+			{
+				if (UFO->IsExplosive())
+				{
+					
+					UFO->SetActive(false);
+					SpawnExplosive(UFO->Get2DPosition());
+					continue;
+					
+					
+				}
+
+				UFO->Update(deltaTime);
+				
+				if (UFO->CanShoot()){
+					UFO->Shoot(m_listBullet);
+					UFO->Shoot2(m_listBullet2);
+					UFO->Shoot3(m_listBullet3);
+				}
+				UFO->CheckCollider(m_listBullet);
+			}
+			if (UFO->IsActive() == false)
+			{
+				SoundManager::GetInstance()->PauseSound("bground");
+				GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Playagain1);
+
+			}
+		}
+	}
+	
 	//update Score
 	std::stringstream stream;
 	stream << std::fixed << std::setprecision(0) << m_score;
@@ -237,27 +311,6 @@ void GSPlay::Update(float deltaTime)
 	stream2 << std::fixed << std::setprecision(0) << m_Player->GetHeal();
 	std::string heal = "HP: " + stream2.str();
 	m_playerHealText->setText(heal);
-	//hp = m_Player->GetHeal;
-	if (m_score == 32)
-	{
-		m_SpawnCooldown2 = 0.1;
-		for (auto UFO : m_listEnermy2)
-		{
-			if (UFO->IsActive())
-			{
-				if (UFO->IsExplosive())
-				{
-					UFO->SetActive(false);
-					SpawnExplosive(UFO->Get2DPosition());
-					continue;
-				}
-				UFO->Update(deltaTime);
-				if (UFO->CanShoot())
-					UFO->Shoot(m_listBullet);
-				UFO->CheckCollider(m_listBullet);
-			}
-		}
-	}
 }
 
 void GSPlay::Draw()
@@ -268,20 +321,32 @@ void GSPlay::Draw()
 	for (auto enermy : m_listEnermy)
 		if (enermy->IsActive())
 			enermy->Draw();
-	if(m_score==32){
+	if(m_score==42){
+		for (auto enermy : m_listEnermy)
+			if (enermy->IsActive())
+				enermy->SetActive(0);
 		for (auto UFO : m_listEnermy2)
 			if (UFO->IsActive())
 				UFO->Draw();
 	}
 	if (m_Player->IsAlive())
 		m_Player->Draw();
+
 	for (auto meteor : m_listMeteor)
 		if (meteor->IsActive())
 			meteor->Draw();
+
 	for (auto bullet : m_listBullet)
 		if (bullet->IsActive())
 			bullet->Draw();
 
+	for (auto bullet : m_listBullet2)
+		if (bullet->IsActive())
+			bullet->Draw();
+
+	for (auto bullet : m_listBullet3)
+		if (bullet->IsActive())
+			bullet->Draw();
 	for (auto exp : m_listExplosiveEffect)
 	{
 		if (exp->IsActive())
@@ -334,6 +399,46 @@ void GSPlay::CreateRandomUFO()
 	m_listEnermy2.push_back(enermy);	
 	//}
 }
+void GSPlay::CreateRandomUFO2()
+{
+	
+	int range = Application::screenHeight- 10 + 1;
+	int num = rand() % range + 10;
+
+	Vector2 pos;
+	pos.x = 100;
+	pos.y = num;
+	if (num < Application::screenHeight / 2) {
+		for (auto enermy : m_listEnermy2)
+		{
+			if (!enermy->IsActive())
+			{
+				enermy->SetActive(true);
+				enermy->Set2DPosition(pos);
+				return;
+			}
+		}
+
+		Vector2 pos;
+		pos.x = Application::screenWidth / 2;
+		pos.y = 200;
+
+
+		auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D");
+		auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+		auto texture = ResourceManagers::GetInstance()->GetTexture("enemyUFO");
+
+		std::shared_ptr<UFO> enermy = std::make_shared<UFO>(model, shader, texture);
+
+		enermy->SetActive(true);
+
+		enermy->Set2DPosition(pos);
+		enermy->SetSize(400, 400);
+		enermy->SetRotation(180);
+		m_listEnermy2.push_back(enermy);
+	}
+}
+
 
 void GSPlay::CreateRandomEnermy()
 {

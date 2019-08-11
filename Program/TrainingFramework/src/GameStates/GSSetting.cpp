@@ -1,5 +1,6 @@
 #include "GSSetting.h"
-
+#include<fstream>
+using namespace std;
 GSSetting::GSSetting()
 {
 
@@ -25,7 +26,6 @@ void GSSetting::Init()
 
 	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
 
-	
 	//exit button
 	texture = ResourceManagers::GetInstance()->GetTexture("button_quit");
 	button = std::make_shared<GameButton>(model, shader, texture);
@@ -33,11 +33,49 @@ void GSSetting::Init()
 	button->SetSize(110, 110);
 	button->SetRotation(180);
 	button->SetOnClick([]() {
+		Sleep(500);
 		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Menu);
 		});
 	m_listButton.push_back(button);
 
-
+	texture = ResourceManagers::GetInstance()->GetTexture("button_bgon");
+	button = std::make_shared<GameButton>(model, shader, texture);
+	button->Set2DPosition(Application::screenWidth / 2, 300);
+	button->SetSize(110, 110);
+	//button->SetRotation(180);
+	button->SetOnClick([]() {
+		
+		int x;
+		int y;
+		// ====================== GHI FILE ======================
+		ofstream FileOut;
+		FileOut.open("config.txt", ios_base::out);
+		FileOut << 1<<" ";
+		FileOut << 0;
+		FileOut.close();
+		Sleep(500);
+		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Setting1);
+		});
+	m_listButton.push_back(button);
+	texture = ResourceManagers::GetInstance()->GetTexture("button_sfon");
+	button = std::make_shared<GameButton>(model, shader, texture);
+	button->Set2DPosition(Application::screenWidth / 2, 700);
+	button->SetSize(110, 110);
+   button->SetRotation(180);
+	button->SetOnClick([]() {
+	
+		int x;
+		int y;
+		// ====================== GHI FILE ======================
+		ofstream FileOut;
+		FileOut.open("config.txt", ios_base::out);
+		FileOut << 0 << " ";
+		FileOut << 1;
+		FileOut.close();
+		Sleep(500);
+		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Setting2);
+		});
+	m_listButton.push_back(button);
 	//text game title
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("arialbd");

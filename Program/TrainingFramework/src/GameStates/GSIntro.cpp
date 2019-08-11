@@ -1,5 +1,6 @@
 #include "GSIntro.h"
-
+#include<fstream>
+using namespace std;
 
 GSIntro::GSIntro()
 {
@@ -20,6 +21,12 @@ void GSIntro::Init()
 	m_BackGround = std::make_shared<Sprite2D>(model, shader, texture);
 	m_BackGround->Set2DPosition(Application::screenWidth / 2, Application::screenHeight / 2);
 	m_BackGround->SetSize(Application::screenWidth, Application::screenHeight);
+	ofstream FileOut;
+	FileOut.open("config.txt", ios_base::out);
+	FileOut << 1 << " ";
+	FileOut << 1;
+	FileOut.close();
+
 }
 
 void GSIntro::Exit()

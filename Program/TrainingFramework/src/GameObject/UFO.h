@@ -2,6 +2,8 @@
 
 #include "Sprite2D.h"
 #include <Bullet.h>
+#include"Bullet2.h"
+#include"Bullet3.h"
 
 class UFO : public Sprite2D
 {
@@ -15,6 +17,8 @@ public:
 
 	bool		CanShoot();
 	void		Shoot(std::vector<std::shared_ptr<Bullet>>& listBullet);
+	void		Shoot2(std::vector<std::shared_ptr<Bullet2>>& listBullet);
+	void		Shoot3(std::vector<std::shared_ptr<Bullet3>>& listBullet);
 	void		CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet);
 
 	void		SetColliderSize(float size);
@@ -27,7 +31,7 @@ public:
 	bool		IsExplosive();
 
 private:
-	int		m_Heal=10000;
+	int		m_Heal=500;
 	bool	m_active;
 	bool	m_Explosive;
 	float	m_speed;
@@ -36,7 +40,7 @@ private:
 	float	m_Cooldown;
 	float	m_Damage;
 	float	m_SizeCollider;
-
+	int sfx;
 	float distance(Vector2 pos, Vector2 target);
 
 };
